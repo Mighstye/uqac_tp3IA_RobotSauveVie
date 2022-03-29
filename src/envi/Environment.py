@@ -27,8 +27,9 @@ class Environment(Borg.Borg):
 
     def robotMove(self, robot):
         self.grid[robot.oldPos[0]][robot.oldPos[1]].remove(self.robot)
-        self.grid[robot.oldPos[0]][robot.oldPos[1]].append(self.envObjRef)
-        try :
+        if not self.grid[robot.oldPos[0]][robot.oldPos[1]]:
+            self.grid[robot.oldPos[0]][robot.oldPos[1]].append(self.envObjRef)
+        try:
             self.grid[robot.pos[0]][robot.pos[1]].remove(self.envObjRef)
         except ValueError:
             pass
