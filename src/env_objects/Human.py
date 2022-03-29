@@ -1,4 +1,4 @@
 class Human:
-    def __init__(self):
-        """TODO"""
+    def __init__(self,pos):
+        self.pos = pos
         
