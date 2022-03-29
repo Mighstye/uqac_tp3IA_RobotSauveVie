@@ -35,6 +35,14 @@ class Environment(Borg.Borg):
             pass
         self.grid[robot.pos[0]][robot.pos[1]].append(self.robot)
 
+    def checkEndCondition(self):
+        for obj in self.grid[self.robot.pos[0]][self.robot.pos[1]]:
+            if isinstance(obj, Fire.Fire) or isinstance(obj, Ruins.Ruins):
+                return False
+            elif isinstance(obj, Human.Human):
+                return True
+        return None
+
     def returnTileContent(self, pos):
         try:
             return self.grid[pos[0]][pos[1]]
@@ -42,8 +50,8 @@ class Environment(Borg.Borg):
             return None
 
     def __generate(self):
-        FIRE_COUNT = 1
-        RUINS_COUNT = 1
+        FIRE_COUNT = len(self.grid)//3
+        RUINS_COUNT = len(self.grid)//3
         while FIRE_COUNT > 0:
             pos = self.__randomPosInGrid()
             if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1):

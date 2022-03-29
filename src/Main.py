@@ -2,5 +2,10 @@ from syst import Game
 
 
 if __name__ == "__main__":
-    for i in range(10):
-        Game.Game(i)
+    state = True
+    i = 0
+    while state:
+        gameRef = Game.Game(i)
+        state = gameRef.finalState
+        i += 1
+    print("Simulation finished, the robot survived for "+str(i)+" round")
