@@ -1,4 +1,4 @@
-""" Implementation of Borg Idiom to modify the Environment from env_objects class without having to pass the env
+""" Implementation of Borg Idiom to modify the Environment from env_objects class without having to pass the envi
 # to it. """
 
 

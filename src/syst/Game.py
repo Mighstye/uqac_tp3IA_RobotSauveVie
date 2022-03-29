@@ -1,4 +1,4 @@
-from src.env import Environment
+from src.envi import Environment
 
 
 class Game:

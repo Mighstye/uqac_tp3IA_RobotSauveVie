@@ -1,5 +1,5 @@
 from src.env_objects.enum import TileType, Directions
-from src.env import Environment
+from src.envi import Environment
 from src.env_objects import EnvObject
 
 

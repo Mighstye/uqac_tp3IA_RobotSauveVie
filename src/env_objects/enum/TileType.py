@@ -8,4 +8,4 @@ class TileType(Enum):
     ROBOT = 'Ro'
     RUINS = 'Ru'
     WARM = 'W'
-    UNKNOWN = '?'
+    UNKNOWN = '??'
