@@ -9,3 +9,4 @@ if __name__ == "__main__":
         state = gameRef.finalState
         i += 1
     print("Simulation finished, the robot survived for "+str(i)+" round")
+

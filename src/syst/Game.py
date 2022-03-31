@@ -10,8 +10,18 @@ class Game:
         self.end = None
         self.moveList = []
         self.stringState = 'Unknown'
+
+
+        self.possibleMove = [0,1,2,3]
+        self.baseDeConnaissances = [[[] for i in range(3+iteration)] for j in range(3+iteration)]
+
+
+
+
         while self.env.checkEndCondition() is None:
             """C"EST ICI QU'ON MET L'IA MESSIEURS"""
+
+            print(self.env.robot.neighboor)
             randomizer = random.randint(0, 3)
             if 0 == randomizer:
                 self.env.robot.move('N')
@@ -40,3 +50,8 @@ class Game:
         input("Press enter for next Level.")
         os.system('cls')
         self.finalState = self.env.checkEndCondition()
+
+
+
+
+
