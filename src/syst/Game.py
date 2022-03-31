@@ -25,6 +25,9 @@ class Game:
             elif 3 == randomizer:
                 self.env.robot.move('W')
                 self.moveList.append("Moved West")
+            #self.env.robot.neighboor
+            #self.env.robot.listpos
+            #self.env.robot.oldPos
         if self.env.checkEndCondition():
             self.stringState = 'Win'
         else:

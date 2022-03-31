@@ -12,9 +12,6 @@ class Environment(Borg.Borg):
             self.grid = [[[self.envObjRef] for i in range(N)] for j in range(N)]
             self.__generate()
 
-    def __int__(self):
-        Borg.Borg.__init__(self)
-
     def __str__(self):
         returnStr = ''
         for i in range(len(self.grid)):
