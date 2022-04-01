@@ -36,8 +36,8 @@ class Rules_base:
         rule7 = Rule(["nothing"], ["continue"])
         listOfRules.append(rule7)
 
-        #Si le robot éteint le feu, le feu est supprimer
-        rule8 = Rule([""], ["avoid"])
+        #Si le robot éteint le feu, le feu est supprimer et les zones de chaleurs également
+        rule8 = Rule(["extinguish"], ["delete fire and warm area"])
         listOfRules.append(rule6)
 
         return listOfRules

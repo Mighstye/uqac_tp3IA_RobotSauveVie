@@ -153,6 +153,7 @@ class Environment(Borg.Borg):
         except ValueError:
             pass
         self.grid[len(self.grid) - 1][len(self.grid) - 1].append(Human.Human((len(self.grid) - 1, len(self.grid) - 1)))
+        self.robot.askNeighboor()
 
     def __randomPosInGrid(self):
         returnStatement = random.randint(0, len(self.grid) - 1), random.randint(0, len(self.grid) - 1)

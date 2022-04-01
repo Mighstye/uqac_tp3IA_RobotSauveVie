@@ -43,9 +43,9 @@ class Robot(EnvObject.EnvObject):
                 self.env.robotMove(self)
             if self.listpos[len(self.listpos)-1] != self.oldPos:
                 self.listpos.append(self.oldPos)
-            self.__askNeighboor()
+            self.askNeighboor()
 
-    def __askNeighboor(self):
+    def askNeighboor(self):
         self.neighboor[0] = self.env.returnTileContent((self.pos[0]-1, self.pos[1]))
         self.neighboor[1] = self.env.returnTileContent((self.pos[0], self.pos[1]+1))
         self.neighboor[2] = self.env.returnTileContent((self.pos[0]+1, self.pos[1]))
