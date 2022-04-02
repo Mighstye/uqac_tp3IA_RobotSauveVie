@@ -41,6 +41,7 @@ class Robot(EnvObject.EnvObject):
                     moved = True
             if moved:
                 self.env.robotMove(self)
+                print("Robot moved to "+ move.value)
             if self.listpos[len(self.listpos)-1] != self.oldPos:
                 self.listpos.append(self.oldPos)
             self.askNeighboor()

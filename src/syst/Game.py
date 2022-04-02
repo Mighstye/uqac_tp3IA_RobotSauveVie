@@ -27,9 +27,8 @@ class Game:
 
             listeRegleApplicable, listeVoisins = self.selectionApplicableRule()
             # self.__printknowledgeBase()
-            while listeRegleApplicable != []:
-                self.appliquerRule(self.selectionRule(listeRegleApplicable), listeVoisins, listeRegleApplicable)
-                listeRegleApplicable.remove(self.selectionRule(listeRegleApplicable))
+            self.appliquerRule(self.selectionRule(listeRegleApplicable), listeVoisins)
+            listeRegleApplicable.remove(self.selectionRule(listeRegleApplicable))
                 # print(len(listeRegleApplicable))
 
             print("End turn")
@@ -64,34 +63,29 @@ class Game:
         self.finalState = self.env.checkEndCondition()
 
     def mapExploration(self):
-        listeVoisin = []
         for i in range(len(self.env.robot.neighboor)):
             if self.env.robot.neighboor[i] is not None:
                 if 0 == i:
-                    voisins = []
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'N')
-                        voisins.append(element.type.value)
-                    listeVoisin.append([voisins, 'N'])
                 if 1 == i:
-                    voisins = []
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'E')
-                        voisins.append(element.type.value)
-                    listeVoisin.append([voisins, 'E'])
                 if 2 == i:
-                    voisins = []
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'S')
-                        voisins.append(element.type.value)
-                    listeVoisin.append([voisins, 'S'])
                 if 3 == i:
-                    voisins = []
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'W')
-                        voisins.append(element.type.value)
-                    listeVoisin.append([voisins, 'W'])
-        return listeVoisin
+        self.__notePosInMap()
+
+    def getVoisinFromMap(self):
+        pos = self.env.robot.pos
+        voisin = [(self.knowledgeBase.returnTileContent((pos[0] - 1, pos[1])), 'N'),
+                  (self.knowledgeBase.returnTileContent((pos[0], pos[1] + 1)), 'E'),
+                  (self.knowledgeBase.returnTileContent((pos[0] + 1, pos[1])), 'S'),
+                  (self.knowledgeBase.returnTileContent((pos[0], pos[1] - 1)), 'W')]
+        return voisin
 
     def __placeInMap(self, pos, element, directionString):
         if isinstance(Directions.Directions(directionString), Directions.Directions):
@@ -108,9 +102,6 @@ class Game:
             if Directions.Directions.WEST == direction:
                 if element.type.value not in self.knowledgeBase.listKnowledge[pos[0]][pos[1] - 1]:
                     self.knowledgeBase.listKnowledge[pos[0]][pos[1] - 1].append(element.type.value)
-        for pos in self.env.robot.listpos:
-            if "V" not in self.knowledgeBase.listKnowledge[pos[0]][pos[1]]:
-                self.knowledgeBase.listKnowledge[pos[0]][pos[1]].append("V")
 
     def __printknowledgeBase(self):
         for line in self.knowledgeBase.listKnowledge:
@@ -118,16 +109,21 @@ class Game:
                 print(item, end='')
             print()
 
+    def __notePosInMap(self):
+        pos = self.env.robot.oldPos
+        if "V" not in self.knowledgeBase.listKnowledge[pos[0]][pos[1]]:
+            self.knowledgeBase.listKnowledge[pos[0]][pos[1]].append("V")
+
     def selectionApplicableRule(self):
+        self.mapExploration()
         listeRegleApplicable = []
-        listeVoisins = self.mapExploration()
+        listeVoisins = self.getVoisinFromMap()
+        print(listeVoisins)
         for voisin in listeVoisins:
-            for obj in voisin[0]:
-                for rule in self.rules:
-                    if obj in rule.condition:
-                        listeRegleApplicable.append(rule)
-        for rule in listeRegleApplicable:
-            """print(rule.consequence)"""
+            for rule in self.rules:
+                if voisin[0] == rule.condition or voisin[0].reverse() == rule.condition:
+                    print("New rule : "+str(rule))
+                    listeRegleApplicable.append(rule)
 
         return listeRegleApplicable, listeVoisins
 
@@ -149,27 +145,39 @@ class Game:
 
         return ruleSelectionnee
 
-    def appliquerRule(self, rule, listeVoisins, listeRegleApplicable):
+    def appliquerRule(self, rule, listeVoisins):
         for cond in rule.condition:
             for voisin in listeVoisins:
                 # print(voisin)
                 if cond in voisin[0]:
                     direction = voisin[1]
                     if cond == "H":
+                        print("H detected in "+direction)
                         self.env.robot.move(direction)
-                        break
-                    elif cond == "F":
-                        self.env.robot.extinguish(direction)
-                        break
-                    elif cond == "??":
-                        self.env.robot.move(direction)
-                        break
+                        return
                     elif cond == "Ru":
+                        print("Ru detected in "+direction)
                         self.env.robot.move(self.nextSafeCardinal(direction))
-                        break
+                        return
+                    elif cond == "F":
+                        print("F detected in " + direction)
+                        self.env.robot.extinguish(direction)
+                        return
+                    elif cond == "D":
+                        print("D detected in " + direction)
+                        if "V" not in voisin[0]:
+                            self.env.robot.move(direction)
+                            return
                     elif cond == "W":
+                        print("W detected in " + direction)
                         self.env.robot.move(direction)
-                        break
+                        return
+                    elif cond == "??":
+                        print("?? detected in " + direction)
+                        self.env.robot.move(direction)
+                        if "V" not in voisin[0]:
+                            self.env.robot.move(direction)
+                            return
 
     def nextSafeCardinal(self, originDirection):
         nextCardIsSafe = False

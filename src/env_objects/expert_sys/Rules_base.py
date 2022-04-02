@@ -52,4 +52,7 @@ class Rules_base:
         rule11 = Rule(["H"], ["rescue"])
         listOfRules.append(rule11)
 
+        rule12 = Rule(["V"], ["less priority"])
+        listOfRules.append(rule12)
+
         return listOfRules

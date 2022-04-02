@@ -42,6 +42,8 @@ class Environment(Borg.Borg):
 
     def returnTileContent(self, pos):
         try:
+            if -1 == pos[0] or -1 == pos[1]:
+                return None
             return self.grid[pos[0]][pos[1]]
         except IndexError:
             return None
