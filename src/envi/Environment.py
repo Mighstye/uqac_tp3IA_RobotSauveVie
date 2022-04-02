@@ -161,3 +161,25 @@ class Environment(Borg.Borg):
             return returnStatement
         else:
             return self.__randomPosInGrid()
+
+    def removeElement(self, pos, element):
+        for elem in self.grid[pos[0]][pos[1]]:
+            if isinstance(elem, element):
+                try:
+                    self.grid[pos[0]][pos[1]].remove(elem)
+                except ValueError:
+                    pass
+                except IndexError:
+                    pass
+                try:
+                    if not self.grid[pos[0]][pos[1]]:
+                        self.grid[pos[0]][pos[1]].append(self.envObjRef)
+                except IndexError:
+                    pass
+
+    def extinguish(self, pos):
+        posCard = [(pos[0]-1, pos[1]), (pos[0], pos[1]+1), (pos[0]+1, pos[1]), (pos[0], pos[1]-1)]
+        self.removeElement(pos, Fire.Fire)
+        for posI in posCard:
+            self.removeElement(posI, Warm.Warm)
+

@@ -50,3 +50,15 @@ class Robot(EnvObject.EnvObject):
         self.neighboor[1] = self.env.returnTileContent((self.pos[0], self.pos[1]+1))
         self.neighboor[2] = self.env.returnTileContent((self.pos[0]+1, self.pos[1]))
         self.neighboor[3] = self.env.returnTileContent((self.pos[0], self.pos[1]-1))
+
+    def extinguish(self, directionString):
+        if isinstance(Directions.Directions(directionString), Directions.Directions):
+            direction = Directions.Directions(directionString)
+            if direction == Directions.Directions.NORTH:
+                self.env.extinguish((self.pos[0] - 1, self.pos[1]))
+            elif direction == Directions.Directions.EAST:
+                self.env.extinguish((self.pos[0], self.pos[1] + 1))
+            elif direction == Directions.Directions.SOUTH:
+                self.env.extinguish((self.pos[0] + 1, self.pos[1]))
+            elif direction == Directions.Directions.WEST:
+                self.env.extinguish((self.pos[0], self.pos[1] - 1))

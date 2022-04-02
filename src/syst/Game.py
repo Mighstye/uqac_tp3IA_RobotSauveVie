@@ -159,8 +159,7 @@ class Game:
                     if cond == "H":
                         self.env.robot.move(direction)
                     elif cond == "F":
-                        #eteindre feu
-                        print("le robot ne peut pas encore éteindre les flammes :(")
+                        self.env.robot.extinguish(direction)
                     elif cond == "??":
                         self.env.robot.move(direction)
                     elif cond == "Ru":
