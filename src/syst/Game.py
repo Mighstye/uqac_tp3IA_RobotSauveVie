@@ -27,9 +27,13 @@ class Game:
             print(self.env.robot.pos)
             # if isinstance(self.env.robot.neighboor[0][0], Dust.Dust):
 
+
             listeRegleApplicable, listeVoisins = self.selectionApplicableRule()
             self.__printknowledgeBase()
-            self.appliquerRule(self.selectionRule(listeRegleApplicable), listeRegleApplicable, listeVoisins)
+            while listeRegleApplicable != []:
+                self.appliquerRule(self.selectionRule(listeRegleApplicable), listeVoisins, listeRegleApplicable)
+                listeRegleApplicable.remove(self.selectionRule(listeRegleApplicable))
+                print(len(listeRegleApplicable))
 
             # print("les voisins : "+str(self.env.robot.neighboor[0][0].type.value))
             # randomizer = random.randint(0, 3)
@@ -147,24 +151,23 @@ class Game:
         return ruleSelectionnee
 
     def appliquerRule(self, rule, listeVoisins, listeRegleApplicable):
-        for condition in rule.condition:
+        for cond in rule.condition:
             for voisin in listeVoisins:
-                if condition in voisin[0]:
+                print(voisin)
+                if cond in voisin[0]:
                     direction = voisin[1]
-                    if condition == "H":
+                    if cond == "H":
                         self.env.robot.move(direction)
-                    elif condition == "F":
+                    elif cond == "F":
                         #eteindre feu
                         print("le robot ne peut pas encore éteindre les flammes :(")
-                    elif condition == "??":
+                    elif cond == "??":
                         self.env.robot.move(direction)
-                    elif condition == "Ru":
+                    elif cond == "Ru":
                         print("ruine, le robot n'avance pas")
-                    elif condition == "W":
+                    elif cond == "W":
                         self.env.robot.move(direction)
-        listeRegleApplicable.remove(rule)
-        if listeRegleApplicable != []:
-            self.selectionRule(listeRegleApplicable)
+
 
 
 
