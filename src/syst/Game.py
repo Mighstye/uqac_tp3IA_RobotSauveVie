@@ -29,21 +29,23 @@ class Game:
 
             listeRegleApplicable, listeVoisins = self.selectionApplicableRule()
             self.__printknowledgeBase()
+            self.appliquerRule(self.selectionRule(listeRegleApplicable), listeRegleApplicable, listeVoisins)
 
             # print("les voisins : "+str(self.env.robot.neighboor[0][0].type.value))
-            randomizer = random.randint(0, 3)
-            if 0 == randomizer:
-                self.env.robot.move('N')
-                self.moveList.append("Moved North")
-            elif 1 == randomizer:
-                self.env.robot.move('E')
-                self.moveList.append("Moved East")
-            elif 2 == randomizer:
-                self.env.robot.move('S')
-                self.moveList.append("Moved South")
-            elif 3 == randomizer:
-                self.env.robot.move('W')
-                self.moveList.append("Moved West")
+            # randomizer = random.randint(0, 3)
+            # if 0 == randomizer:
+            #     self.env.robot.move('N')
+            #     self.moveList.append("Moved North")
+            # elif 1 == randomizer:
+            #     self.env.robot.move('E')
+            #     self.moveList.append("Moved East")
+            # elif 2 == randomizer:
+            #     self.env.robot.move('S')
+            #     self.moveList.append("Moved South")
+            # elif 3 == randomizer:
+            #     self.env.robot.move('W')
+            #     self.moveList.append("Moved West")
+
         if self.env.checkEndCondition():
             self.stringState = 'Win'
         else:
@@ -129,9 +131,40 @@ class Game:
     def selectionRule(self, applicableRule):
         ruleSelectionnee = 0
         for rule in applicableRule:
-            if "F" in rule.condition:
+            if "H" in rule.condition:
+                ruleSelectionnee = rule
+            elif "F" in rule.condition:
                 ruleSelectionnee = rule
             elif "??" in rule.condition:
                 ruleSelectionnee = rule
-        return rule
+            elif "Ru" in rule.condition:
+                ruleSelectionnee = rule
+            elif "W" in rule.condition:
+                ruleSelectionnee = rule
+            elif "D" in rule.condition:
+                ruleSelectionnee = rule
+
+        return ruleSelectionnee
+
+    def appliquerRule(self, rule, listeVoisins, listeRegleApplicable):
+        for condition in rule.condition:
+            for voisin in listeVoisins:
+                if condition in voisin[0]:
+                    direction = voisin[1]
+                    if condition == "H":
+                        self.env.robot.move(direction)
+                    elif condition == "F":
+                        #eteindre feu
+                        print("le robot ne peut pas encore éteindre les flammes :(")
+                    elif condition == "??":
+                        self.env.robot.move(direction)
+                    elif condition == "Ru":
+                        print("ruine, le robot n'avance pas")
+                    elif condition == "W":
+                        self.env.robot.move(direction)
+        listeRegleApplicable.remove(rule)
+        if listeRegleApplicable != []:
+            self.selectionRule(listeRegleApplicable)
+
+
 

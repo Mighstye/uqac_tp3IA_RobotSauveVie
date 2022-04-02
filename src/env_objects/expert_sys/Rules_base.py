@@ -48,4 +48,8 @@ class Rules_base:
         rule10 = Rule(["F", "Ru"], ["avoid"])
         listOfRules.append(rule10)
 
+        # Si il y a un humain, aller le sauver
+        rule11 = Rule(["H"], ["rescue"])
+        listOfRules.append(rule11)
+
         return listOfRules
