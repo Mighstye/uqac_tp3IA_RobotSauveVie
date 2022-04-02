@@ -8,12 +8,12 @@ class Rules_base:
 
         #Liste des règles
 
-        #Si il y a de la chaleur, les cases autour de celle-ci pourraient avoir un feu
-        rule1 = Rule(["warm"], ["fire in neighboor"])
+        #Si il y a de la chaleur, le robot va sur la case dans 60% des cas
+        rule1 = Rule(["W"], ["go sur case"])
         listOfRules.append(rule1)
 
         #Si il y a des poussières, les cases autour pourraient avoir des décombres
-        rule2 = Rule(["dust"], ["ruins in neighboor"])
+        rule2 = Rule(["D"], ["ignore"])
         listOfRules.append(rule2)
 
         #Si il y a des cris, le robot a trouvé la victime
@@ -21,23 +21,31 @@ class Rules_base:
         listOfRules.append(rule3)
 
         #Si il y a un feu, le robot l'éteint
-        rule4 = Rule(["fire"], ["extinguish"])
+        rule4 = Rule(["F"], ["extinguish"])
         listOfRules.append(rule4)
 
-        #Si il y a un feu et ??, le robot contourne le feu
-        rule5 = Rule(["fire"], ["avoid"])
+        #Si il y a des ruines, le robot contourne les ruines
+        rule5 = Rule(["Ru"], ["avoid"])
         listOfRules.append(rule5)
 
-        #Si il y a des ruines, le robot contourne les ruines
-        rule6 = Rule(["ruins"], ["avoid"])
+        #Si il une case vide dans le voisinage non visitée, on y va
+        rule6 = Rule(["??"], ["continue"])
         listOfRules.append(rule6)
-
-        #Si il n'y a rien dans le voisinage ou sur la case du robot, suivre parcourt
-        rule7 = Rule(["nothing"], ["continue"])
-        listOfRules.append(rule7)
 
         #Si le robot éteint le feu, le feu est supprimer et les zones de chaleurs également
-        rule8 = Rule(["extinguish"], ["delete fire and warm area"])
-        listOfRules.append(rule6)
+        rule7 = Rule(["extinguish"], ["delete fire and warm area"])
+        listOfRules.append(rule7)
+
+        # Si il y a de la chaleur et des ruines, le robot évite
+        rule8 = Rule(["W", "Ru"], ["avoid"])
+        listOfRules.append(rule8)
+
+        # Si il y a de la chaleur et de la poussière, le robot évite
+        rule9 = Rule(["W", "D"], ["avoid"])
+        listOfRules.append(rule9)
+
+        # Si il y a un feu et des ruines, le robot évite
+        rule10 = Rule(["F", "Ru"], ["avoid"])
+        listOfRules.append(rule10)
 
         return listOfRules
