@@ -181,5 +181,8 @@ class Environment(Borg.Borg):
         posCard = [(pos[0]-1, pos[1]), (pos[0], pos[1]+1), (pos[0]+1, pos[1]), (pos[0], pos[1]-1)]
         self.removeElement(pos, Fire.Fire)
         for posI in posCard:
-            self.removeElement(posI, Warm.Warm)
+            try:
+                self.removeElement(posI, Warm.Warm)
+            except IndexError:
+                pass
 

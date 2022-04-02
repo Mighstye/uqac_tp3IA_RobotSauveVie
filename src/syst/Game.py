@@ -17,23 +17,23 @@ class Game:
         self.knowledgeBase = KnowledgeBase(3 + iteration)
         self.rules_base = Rules_base()
         self.rules = self.rules_base.rulesOfGame()
+        self.cardList = ['N', 'E', 'S', 'W']
 
         while self.env.checkEndCondition() is None:
             """C"EST ICI QU'ON MET L'IA MESSIEURS"""
 
-
-
-
-            print(self.env.robot.pos)
+            # print(self.env.robot.pos)
             # if isinstance(self.env.robot.neighboor[0][0], Dust.Dust):
 
-
             listeRegleApplicable, listeVoisins = self.selectionApplicableRule()
-            self.__printknowledgeBase()
+            # self.__printknowledgeBase()
             while listeRegleApplicable != []:
                 self.appliquerRule(self.selectionRule(listeRegleApplicable), listeVoisins, listeRegleApplicable)
                 listeRegleApplicable.remove(self.selectionRule(listeRegleApplicable))
-                print(len(listeRegleApplicable))
+                # print(len(listeRegleApplicable))
+
+            print("End turn")
+            print(self.env)
 
             # print("les voisins : "+str(self.env.robot.neighboor[0][0].type.value))
             # randomizer = random.randint(0, 3)
@@ -93,7 +93,6 @@ class Game:
                     listeVoisin.append([voisins, 'W'])
         return listeVoisin
 
-
     def __placeInMap(self, pos, element, directionString):
         if isinstance(Directions.Directions(directionString), Directions.Directions):
             direction = Directions.Directions(directionString)
@@ -128,7 +127,7 @@ class Game:
                     if obj in rule.condition:
                         listeRegleApplicable.append(rule)
         for rule in listeRegleApplicable:
-            print(rule.consequence)
+            """print(rule.consequence)"""
 
         return listeRegleApplicable, listeVoisins
 
@@ -153,20 +152,64 @@ class Game:
     def appliquerRule(self, rule, listeVoisins, listeRegleApplicable):
         for cond in rule.condition:
             for voisin in listeVoisins:
-                print(voisin)
+                # print(voisin)
                 if cond in voisin[0]:
                     direction = voisin[1]
                     if cond == "H":
                         self.env.robot.move(direction)
+                        break
                     elif cond == "F":
                         self.env.robot.extinguish(direction)
+                        break
                     elif cond == "??":
                         self.env.robot.move(direction)
+                        break
                     elif cond == "Ru":
-                        print("ruine, le robot n'avance pas")
+                        self.env.robot.move(self.nextSafeCardinal(direction))
+                        break
                     elif cond == "W":
                         self.env.robot.move(direction)
+                        break
 
+    def nextSafeCardinal(self, originDirection):
+        nextCardIsSafe = False
+        card = ''
+        originDirectionIndex = self.cardList.index(originDirection)
+        while not nextCardIsSafe:
+            originDirectionIndex += 1
+            if 4 == originDirectionIndex:
+                originDirectionIndex = 0
+            card = self.cardList[originDirectionIndex]
+            if self.getInfoOnDirection(card) is not None:
+                thisTileIsSafe = True
+                for element in self.getInfoOnDirection(card):
+                    if element == 'F' or element == 'Ru':
+                        thisTileIsSafe = False
+                if thisTileIsSafe:
+                    nextCardIsSafe = True
+        return card
 
-
-
+    def getInfoOnDirection(self, directionString):
+        pos = self.env.robot.pos
+        if isinstance(Directions.Directions(directionString), Directions.Directions):
+            direction = Directions.Directions(directionString)
+            if Directions.Directions.NORTH == direction:
+                try:
+                    return self.knowledgeBase.listKnowledge[pos[0] - 1][pos[1]]
+                except IndexError:
+                    return None
+            if Directions.Directions.EAST == direction:
+                try:
+                    return self.knowledgeBase.listKnowledge[pos[0]][pos[1] + 1]
+                except IndexError:
+                    return None
+            if Directions.Directions.SOUTH == direction:
+                try:
+                    return self.knowledgeBase.listKnowledge[pos[0] + 1][pos[1]]
+                except IndexError:
+                    return None
+            if Directions.Directions.WEST == direction:
+                try:
+                    return self.knowledgeBase.listKnowledge[pos[0]][pos[1] - 1]
+                except IndexError:
+                    return None
