@@ -53,98 +53,98 @@ class Environment(Borg.Borg):
         RUINS_COUNT = len(self.grid)//3
         while FIRE_COUNT > 0:
             pos = self.__randomPosInGrid()
-            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1):
+            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1) and len(self.grid[pos[0]][pos[1]]) < 3:
                 try:
                     self.grid[pos[0]][pos[1]].remove(self.envObjRef)
                 except ValueError:
                     pass
                 self.grid[pos[0]][pos[1]].append(Fire.Fire(pos))
                 FIRE_COUNT -= 1
+                try:
+                    if pos[0] - 1 > -1:
+                        self.grid[pos[0] - 1][pos[1]].append(Warm.Warm(pos))
+                        try:
+                            self.grid[pos[0] - 1][pos[1]].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[0] + 1 < len(self.grid):
+                        self.grid[pos[0] + 1][pos[1]].append(Warm.Warm(pos))
+                        try:
+                            self.grid[pos[0] + 1][pos[1]].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[1] - 1 > -1:
+                        self.grid[pos[0]][pos[1] - 1].append(Warm.Warm(pos))
+                        try:
+                            self.grid[pos[0]][pos[1] - 1].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[1] + 1 < len(self.grid):
+                        self.grid[pos[0]][pos[1] + 1].append(Warm.Warm(pos))
+                        try:
+                            self.grid[pos[0]][pos[1] + 1].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
             else:
                 break
-            try:
-                if pos[0] - 1 > -1:
-                    self.grid[pos[0] - 1][pos[1]].append(Warm.Warm(pos))
-                    try:
-                        self.grid[pos[0] - 1][pos[1]].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[0] + 1 < len(self.grid):
-                    self.grid[pos[0] + 1][pos[1]].append(Warm.Warm(pos))
-                    try:
-                        self.grid[pos[0] + 1][pos[1]].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[1] - 1 > -1:
-                    self.grid[pos[0]][pos[1] - 1].append(Warm.Warm(pos))
-                    try:
-                        self.grid[pos[0]][pos[1] - 1].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[1] + 1 < len(self.grid):
-                    self.grid[pos[0]][pos[1] + 1].append(Warm.Warm(pos))
-                    try:
-                        self.grid[pos[0]][pos[1] + 1].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
         while RUINS_COUNT > 0:
             pos = self.__randomPosInGrid()
-            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1):
+            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1) and len(self.grid[pos[0]][pos[1]]) < 3:
                 try:
                     self.grid[pos[0]][pos[1]].remove(self.envObjRef)
                 except ValueError:
                     pass
                 self.grid[pos[0]][pos[1]].append(Ruins.Ruins(pos))
                 RUINS_COUNT -= 1
+                try:
+                    if pos[0] - 1 > -1:
+                        self.grid[pos[0] - 1][pos[1]].append(Dust.Dust(pos))
+                        try:
+                            self.grid[pos[0] - 1][pos[1]].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[0] + 1 < len(self.grid):
+                        self.grid[pos[0] + 1][pos[1]].append(Dust.Dust(pos))
+                        try:
+                            self.grid[pos[0] + 1][pos[1]].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[1] - 1 > -1:
+                        self.grid[pos[0]][pos[1] - 1].append(Dust.Dust(pos))
+                        try:
+                            self.grid[pos[0]][pos[1] - 1].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
+                try:
+                    if pos[1] + 1 < len(self.grid):
+                        self.grid[pos[0]][pos[1] + 1].append(Dust.Dust(pos))
+                        try:
+                            self.grid[pos[0]][pos[1] + 1].remove(self.envObjRef)
+                        except ValueError:
+                            pass
+                except IndexError:
+                    pass
             else:
                 break
-            try:
-                if pos[0] - 1 > -1:
-                    self.grid[pos[0] - 1][pos[1]].append(Dust.Dust(pos))
-                    try:
-                        self.grid[pos[0] - 1][pos[1]].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[0] + 1 < len(self.grid):
-                    self.grid[pos[0] + 1][pos[1]].append(Dust.Dust(pos))
-                    try:
-                        self.grid[pos[0] + 1][pos[1]].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[1] - 1 > -1:
-                    self.grid[pos[0]][pos[1] - 1].append(Dust.Dust(pos))
-                    try:
-                        self.grid[pos[0]][pos[1] - 1].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
-            try:
-                if pos[1] + 1 < len(self.grid):
-                    self.grid[pos[0]][pos[1] + 1].append(Dust.Dust(pos))
-                    try:
-                        self.grid[pos[0]][pos[1] + 1].remove(self.envObjRef)
-                    except ValueError:
-                        pass
-            except IndexError:
-                pass
         try:
             self.grid[0][0].remove(self.envObjRef)
         except ValueError:

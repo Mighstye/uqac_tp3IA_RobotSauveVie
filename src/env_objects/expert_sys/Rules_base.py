@@ -55,4 +55,22 @@ class Rules_base:
         rule12 = Rule(["V"], ["less priority"])
         listOfRules.append(rule12)
 
+        rule13 = Rule(["V", "??"], ["less priority"])
+        listOfRules.append(rule13)
+
+        rule14 = Rule(["D", "V"], ["less priority"])
+        listOfRules.append(rule14)
+
+        rule15 = Rule(["W", "V"], ["less priority"])
+        listOfRules.append(rule15)
+
+        rule16 = Rule(["D", "H"], ["max priority"])
+        listOfRules.append(rule16)
+
+        rule17 = Rule(["W", "H"], ["max priority"])
+        listOfRules.append(rule17)
+
+        rule21 = Rule(["F", "D"], ["extinguish"])
+        listOfRules.append(rule21)
+
         return listOfRules

@@ -18,6 +18,7 @@ class Game:
         self.rules_base = Rules_base()
         self.rules = self.rules_base.rulesOfGame()
         self.cardList = ['N', 'E', 'S', 'W']
+        self.posOf4LastVs = []
 
         while self.env.checkEndCondition() is None:
             """C"EST ICI QU'ON MET L'IA MESSIEURS"""
@@ -27,9 +28,8 @@ class Game:
 
             listeRegleApplicable, listeVoisins = self.selectionApplicableRule()
             # self.__printknowledgeBase()
-            self.appliquerRule(self.selectionRule(listeRegleApplicable), listeVoisins)
-            listeRegleApplicable.remove(self.selectionRule(listeRegleApplicable))
-                # print(len(listeRegleApplicable))
+            self.appliquerRule(listeRegleApplicable, listeVoisins)
+            # print(len(listeRegleApplicable))
 
             print("End turn")
             print(self.env)
@@ -66,18 +66,41 @@ class Game:
         for i in range(len(self.env.robot.neighboor)):
             if self.env.robot.neighboor[i] is not None:
                 if 0 == i:
+                    self.knowledgeBase.listKnowledge[self.env.robot.pos[0] - 1][self.env.robot.pos[1]] = \
+                        [value for value in
+                         self.knowledgeBase.listKnowledge[self.env.robot.pos[0] - 1][self.env.robot.pos[1]] if
+                         value in ['V']]
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'N')
                 if 1 == i:
+                    self.knowledgeBase.listKnowledge[self.env.robot.pos[0]][self.env.robot.pos[1] + 1] = \
+                        [value for value in
+                         self.knowledgeBase.listKnowledge[self.env.robot.pos[0]][self.env.robot.pos[1] + 1] if
+                         value in ['V']]
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'E')
                 if 2 == i:
+                    self.knowledgeBase.listKnowledge[self.env.robot.pos[0] + 1][self.env.robot.pos[1]] = \
+                        [value for value in
+                         self.knowledgeBase.listKnowledge[self.env.robot.pos[0] + 1][self.env.robot.pos[1]] if
+                         value in ['V']]
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'S')
                 if 3 == i:
+                    self.knowledgeBase.listKnowledge[self.env.robot.pos[0]][self.env.robot.pos[1] - 1] = \
+                        [value for value in
+                         self.knowledgeBase.listKnowledge[self.env.robot.pos[0]][self.env.robot.pos[1] - 1] if
+                         value in ['V']]
                     for element in self.env.robot.neighboor[i]:
                         self.__placeInMap(self.env.robot.pos, element, 'W')
-        self.__notePosInMap()
+        self.__putOldPosInMap()
+
+    def __putOldPosInMap(self):
+        self.posOf4LastVs.append(self.env.robot.oldPos)
+        if len(self.posOf4LastVs) > 7:
+            self.knowledgeBase.listKnowledge[self.posOf4LastVs[0][0]][self.posOf4LastVs[0][1]].remove('V')
+            self.posOf4LastVs.pop(0)
+        self.knowledgeBase.listKnowledge[self.env.robot.oldPos[0]][self.env.robot.oldPos[1]].append('V')
 
     def getVoisinFromMap(self):
         pos = self.env.robot.pos
@@ -109,16 +132,10 @@ class Game:
                 print(item, end='')
             print()
 
-    def __notePosInMap(self):
-        pos = self.env.robot.oldPos
-        if "V" not in self.knowledgeBase.listKnowledge[pos[0]][pos[1]]:
-            self.knowledgeBase.listKnowledge[pos[0]][pos[1]].append("V")
-
     def selectionApplicableRule(self):
         self.mapExploration()
         listeRegleApplicable = []
         listeVoisins = self.getVoisinFromMap()
-        print(listeVoisins)
         for voisin in listeVoisins:
             for rule in self.rules:
                 if voisin[0] == rule.condition or voisin[0].reverse() == rule.condition:
@@ -127,57 +144,42 @@ class Game:
 
         return listeRegleApplicable, listeVoisins
 
-    def selectionRule(self, applicableRule):
-        ruleSelectionnee = 0
-        for rule in applicableRule:
-            if "H" in rule.condition:
-                ruleSelectionnee = rule
-            elif "F" in rule.condition:
-                ruleSelectionnee = rule
-            elif "??" in rule.condition:
-                ruleSelectionnee = rule
-            elif "Ru" in rule.condition:
-                ruleSelectionnee = rule
-            elif "W" in rule.condition:
-                ruleSelectionnee = rule
-            elif "D" in rule.condition:
-                ruleSelectionnee = rule
-
-        return ruleSelectionnee
-
     def appliquerRule(self, rule, listeVoisins):
-        for cond in rule.condition:
-            for voisin in listeVoisins:
-                # print(voisin)
-                if cond in voisin[0]:
-                    direction = voisin[1]
-                    if cond == "H":
-                        print("H detected in "+direction)
-                        self.env.robot.move(direction)
-                        return
-                    elif cond == "Ru":
-                        print("Ru detected in "+direction)
-                        self.env.robot.move(self.nextSafeCardinal(direction))
-                        return
-                    elif cond == "F":
-                        print("F detected in " + direction)
-                        self.env.robot.extinguish(direction)
-                        return
-                    elif cond == "D":
-                        print("D detected in " + direction)
-                        if "V" not in voisin[0]:
-                            self.env.robot.move(direction)
+        possibleMove = []
+        for single_rule in rule:
+            for cond in single_rule.condition:
+                for voisin in listeVoisins:
+                    if cond in voisin[0]:
+                        direction = voisin[1]
+                        if cond == "H":
+                            possibleMove.append((direction, 10))
+                        elif cond == "Ru":
+                            possibleMove.append((self.nextSafeCardinal(direction), 8))
+                        elif cond == "F":
+                            self.env.robot.extinguish(direction)
                             return
-                    elif cond == "W":
-                        print("W detected in " + direction)
-                        self.env.robot.move(direction)
-                        return
-                    elif cond == "??":
-                        print("?? detected in " + direction)
-                        self.env.robot.move(direction)
-                        if "V" not in voisin[0]:
-                            self.env.robot.move(direction)
-                            return
+                        elif cond == "D":
+                            if "V" not in voisin[0]:
+                                possibleMove.append((direction, 4))
+                            else:
+                                possibleMove.append((direction, 1))
+                        elif cond == "W":
+                            possibleMove.append((direction, 6))
+                        elif cond == "??":
+                            if "V" not in voisin[0]:
+                                possibleMove.append((direction, 5))
+                            else:
+                                possibleMove.append((direction, 2))
+        bestDir = ''
+        best = 0
+        for move in possibleMove:
+            print("Evaluating "+str(move))
+            if move[1] > best:
+                print("Move is better !")
+                bestDir = move[0]
+                best = move[1]
+        print("Best choice = "+str(bestDir)+" with "+str(best))
+        self.env.robot.move(bestDir)
 
     def nextSafeCardinal(self, originDirection):
         nextCardIsSafe = False
@@ -188,13 +190,14 @@ class Game:
             if 4 == originDirectionIndex:
                 originDirectionIndex = 0
             card = self.cardList[originDirectionIndex]
-            if self.getInfoOnDirection(card) is not None:
+            if self.getInfoOnDirection(card) is not None and self.getInfoOnDirection(card):
                 thisTileIsSafe = True
                 for element in self.getInfoOnDirection(card):
                     if element == 'F' or element == 'Ru':
                         thisTileIsSafe = False
                 if thisTileIsSafe:
                     nextCardIsSafe = True
+        print("Next safe card is "+str(card))
         return card
 
     def getInfoOnDirection(self, directionString):
