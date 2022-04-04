@@ -18,16 +18,25 @@ state = gameRef.finalState (We get the finalState of the Game [True if robot won
 print how many round the robot lasted
 """
 
+import sys
 
+sys.path.append('../')
 from syst import Game
-
+from src.env_objects.enum.TileType import TileType
 
 if __name__ == "__main__":
     state = True
     i = 0
     while state:
+        print('Map info :')
+        print(TileType.DUST.value + ' Dust / ' \
+              + TileType.FIRE.value + ' Fire / ' \
+              + TileType.HUMAN.value + ' Human / ' \
+              + TileType.ROBOT.value + ' Robot / ' \
+              + TileType.RUINS.value + ' Ruins / ' \
+              + TileType.WARM.value + ' Warm ' \
+              + '| Ruins create Dust around and Fire create Warm around.')
         gameRef = Game.Game(i)
         state = gameRef.finalState
         i += 1
-    print("Simulation finished, the robot survived for "+str(i)+" round")
-
+    print("Simulation finished, the robot survived for " + str(i) + " round")

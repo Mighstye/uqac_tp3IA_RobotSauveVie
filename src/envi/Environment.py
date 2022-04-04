@@ -41,11 +41,18 @@ class Environment(Borg.Borg):
             self.__generate()
 
     def __str__(self):
+        maxSize = 0
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid)):
+                if len(self.grid[i][j]) > maxSize:
+                    maxSize = len(self.grid[i][j])
         returnStr = ''
         for i in range(len(self.grid)):
             for j in range(len(self.grid[i])):
                 for obj in self.grid[i][j]:
                     returnStr = returnStr + obj.__str__()
+                if len(self.grid[i][j]) != maxSize:
+                    returnStr = returnStr + ('_' * (maxSize-len(self.grid[i][j])))
                 returnStr = returnStr + '|'
             returnStr = returnStr + '\n'
         return returnStr
@@ -182,7 +189,21 @@ class Environment(Borg.Borg):
             self.grid[len(self.grid) - 1][len(self.grid) - 1].remove(self.envObjRef)
         except ValueError:
             pass
-        self.grid[len(self.grid) - 1][len(self.grid) - 1].append(Human.Human((len(self.grid) - 1, len(self.grid) - 1)))
+        humanNeedPlacement = True
+        while humanNeedPlacement:
+            pos = self.__randomPosInGrid()
+            if pos != (0, 0):
+                legitPos = True
+                for elem in self.grid[pos[0]][pos[1]]:
+                    if isinstance(elem, Fire.Fire) or isinstance(elem, Ruins.Ruins):
+                        legitPos = False
+                if legitPos:
+                    try:
+                        self.grid[pos[0]][pos[1]].remove(self.envObjRef)
+                    except ValueError:
+                        pass
+                    self.grid[pos[0]][pos[1]].append(Human.Human(pos))
+                    humanNeedPlacement = False
         self.robot.askNeighboor()
 
     def __randomPosInGrid(self):
@@ -211,11 +232,19 @@ class Environment(Borg.Borg):
             pass
 
     def extinguish(self, pos):
+        didExtinguish = False
         posCard = [(pos[0]-1, pos[1]), (pos[0], pos[1]+1), (pos[0]+1, pos[1]), (pos[0], pos[1]-1)]
+        try:
+            for elem in self.grid[pos[0]][pos[1]]:
+                if isinstance(elem, Fire.Fire):
+                    didExtinguish = True
+        except IndexError:
+            pass
         self.removeElement(pos, Fire.Fire)
         for posI in posCard:
             try:
                 self.removeElement(posI, Warm.Warm)
             except IndexError:
                 pass
+        return didExtinguish
 

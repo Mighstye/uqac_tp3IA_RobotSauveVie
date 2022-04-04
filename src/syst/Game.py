@@ -30,7 +30,6 @@ Game Class :
     [End of the constructor - Meaning end of the round]
 """
 
-
 from src.envi import Environment
 from src.env_objects.expert_sys.ExpertSystem import ExpertSystem
 import os
@@ -52,8 +51,17 @@ class Game:
             self.stringState = 'Win'
         else:
             self.stringState = 'Lose'
+        moveListString = ''
+        print("Move List : ")
+        for move in self.expert.moveList:
+            moveListString = moveListString + move + ' -> '
+        moveListString = moveListString + 'END'
+        print(moveListString)
         print("State : " + self.stringState + " - Round " + str(iteration))
-        # print(self.env)
-        input("Press enter for next Level.")
+        print(self.env)
+        userReturn = input("Press enter for next Level or press q then enter to quit.\n")
+        if 'q' == userReturn or 'Q' == userReturn:
+            self.finalState = False
+        else:
+            self.finalState = self.env.checkEndCondition()
         os.system('cls')
-        self.finalState = self.env.checkEndCondition()

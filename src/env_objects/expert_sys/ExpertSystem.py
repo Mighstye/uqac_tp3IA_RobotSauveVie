@@ -36,6 +36,7 @@ class ExpertSystem:
         # - Some list that will contain information about what is in the neighbor tiles
         self.env = Environment()
         self.rules = Rules()
+        self.moveList = []
 
         self.North = []
         self.East = []
@@ -118,10 +119,16 @@ class ExpertSystem:
             # Then we choose a random tile from the winning ones
             direction = random.choice(bestScoreIndex)
             # We try to extinguish if there is a fire, and we move toward the chosen direction
-            self.env.robot.extinguish(direction)
+            extinguishReturn = self.env.robot.extinguish(direction)
+            if extinguishReturn:
+                self.moveList.append('Extinguished('+direction+')')
             self.env.robot.move(direction)
+            self.moveList.append(direction)
         # If there is only one winning tile
         else:
             # Then we try to extinguish if there is a fire, and we move toward the winning direction
-            self.env.robot.extinguish(bestScoreIndex[0])
+            extinguishReturn = self.env.robot.extinguish(bestScoreIndex[0])
+            if extinguishReturn:
+                self.moveList.append('Extinguished(' + bestScoreIndex[0] + ')')
             self.env.robot.move(bestScoreIndex[0])
+            self.moveList.append(bestScoreIndex[0])

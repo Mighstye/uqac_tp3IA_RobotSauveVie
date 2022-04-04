@@ -18,7 +18,7 @@ class Rules:
         self.allRules.append((self.Fire, 'F'))
         self.allRules.append((self.Dust, 'D'))
         self.allRules.append((self.Human, 'H'))
-        self.allRules.append((self.Ruins, 'Ru'))
+        self.allRules.append((self.Ruins, 'R'))
         self.allRules.append((self.Warm, 'W'))
         self.l = []
 
@@ -45,7 +45,7 @@ class Rules:
 
     def Ruins(self):  # Check if the list contains a Ruin, return -1000 points if so
         for elem in self.l:
-            if 'Ru' == elem:
+            if 'R' == elem:
                 return -1000
         return 0
 

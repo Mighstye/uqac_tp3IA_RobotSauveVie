@@ -62,7 +62,6 @@ class Robot(EnvObject.EnvObject):
                     moved = True
             if moved:
                 self.env.robotMove(self)
-                #  print("Robot moved to " + move.value)
             if self.listpos[len(self.listpos)-1] != self.oldPos:
                 self.listpos.append(self.oldPos)
             self.askNeighboor()
@@ -77,10 +76,11 @@ class Robot(EnvObject.EnvObject):
         if isinstance(Directions.Directions(directionString), Directions.Directions):
             direction = Directions.Directions(directionString)
             if direction == Directions.Directions.NORTH:
-                self.env.extinguish((self.pos[0] - 1, self.pos[1]))
+                result = self.env.extinguish((self.pos[0] - 1, self.pos[1]))
             elif direction == Directions.Directions.EAST:
-                self.env.extinguish((self.pos[0], self.pos[1] + 1))
+                result = self.env.extinguish((self.pos[0], self.pos[1] + 1))
             elif direction == Directions.Directions.SOUTH:
-                self.env.extinguish((self.pos[0] + 1, self.pos[1]))
+                result = self.env.extinguish((self.pos[0] + 1, self.pos[1]))
             elif direction == Directions.Directions.WEST:
-                self.env.extinguish((self.pos[0], self.pos[1] - 1))
+                result = self.env.extinguish((self.pos[0], self.pos[1] - 1))
+        return result
