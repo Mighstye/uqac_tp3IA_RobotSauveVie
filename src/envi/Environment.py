@@ -1,3 +1,31 @@
+"""
+Environment Class, this class represent the environment
+
+Specs : It uses Borg Idiom, meaning if you instantiate more than one Environment you will only get a reference to the
+already created Environment
+
+Constructor :
+    Take an int => N (Default N=-1) : If no int are provided that means the Environment is called for reference purpose
+    If an int is provided : The environment will create itself
+    N -> Dimension of the area
+
+Methods :
+    __str__ : Override how the object will be displayed when printed
+    robotMove(robot) : Update the position of the robot after a movement (Called by Robot object)
+                       robot : Reference to the robot
+    checkEndCondition : Return None if no end condition
+                        True if the Robot won the round
+                        False if the Robot Lose
+    returnTileContent(pos) : Return the EnvObject in a Tile of the grid
+                             pos : Coordinate of the Tile which the method will return the content from
+    __generate : Generate the object (Fire, Warm, Ruins, Dust, Human) in the environment
+    __randomPosInGrid : Return a random position in the grid which is not the position of the robot / the human
+    removeElement(pos, element) : Remove all occurrence of "element" if the tile situated in "pos"
+                                  pos : Tuple for the coordinate
+                                  element : Class of the element to remove (ex : Fire.Fire)
+    extinguish(pos) : Extinguish Fire in a give pos (Also remove nearly Warm caused by the Fire)
+                      pos : Pos of the Fire to extinguish
+"""
 from src.utils import Borg
 import random
 from src.env_objects import Dust, Fire, Human, Robot, Ruins, Warm, EnvObject
@@ -53,7 +81,7 @@ class Environment(Borg.Borg):
         RUINS_COUNT = len(self.grid)//3
         while FIRE_COUNT > 0:
             pos = self.__randomPosInGrid()
-            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1) and len(self.grid[pos[0]][pos[1]]) < 3:
+            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1):
                 try:
                     self.grid[pos[0]][pos[1]].remove(self.envObjRef)
                 except ValueError:
@@ -100,7 +128,7 @@ class Environment(Borg.Borg):
                 break
         while RUINS_COUNT > 0:
             pos = self.__randomPosInGrid()
-            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1) and len(self.grid[pos[0]][pos[1]]) < 3:
+            if pos != (0, 0) and pos != (len(self.grid) - 1, len(self.grid) - 1):
                 try:
                     self.grid[pos[0]][pos[1]].remove(self.envObjRef)
                 except ValueError:
@@ -165,19 +193,22 @@ class Environment(Borg.Borg):
             return self.__randomPosInGrid()
 
     def removeElement(self, pos, element):
-        for elem in self.grid[pos[0]][pos[1]]:
-            if isinstance(elem, element):
-                try:
-                    self.grid[pos[0]][pos[1]].remove(elem)
-                except ValueError:
-                    pass
-                except IndexError:
-                    pass
-                try:
-                    if not self.grid[pos[0]][pos[1]]:
-                        self.grid[pos[0]][pos[1]].append(self.envObjRef)
-                except IndexError:
-                    pass
+        try:
+            for elem in self.grid[pos[0]][pos[1]]:
+                if isinstance(elem, element):
+                    try:
+                        self.grid[pos[0]][pos[1]] = list(filter(elem.__ne__, self.grid[pos[0]][pos[1]]))
+                    except ValueError:
+                        pass
+                    except IndexError:
+                        pass
+                    try:
+                        if not self.grid[pos[0]][pos[1]]:
+                            self.grid[pos[0]][pos[1]].append(self.envObjRef)
+                    except IndexError:
+                        pass
+        except IndexError:
+            pass
 
     def extinguish(self, pos):
         posCard = [(pos[0]-1, pos[1]), (pos[0], pos[1]+1), (pos[0]+1, pos[1]), (pos[0], pos[1]-1)]

@@ -1,3 +1,24 @@
+"""
+Robot Class :
+    Works like all other element except some variables and methods
+
+    New Variables :
+        pos : actual pos of the robot
+        listpos : list of all pos of the robot
+        oldpos : last pos of the robot
+        neighboor : list containing copy of neighboor tiles content (Order N -> E -> S -> W)
+        env : Reference to the environment
+
+    Methods :
+        move(direction) : Move one tile towards the given directions
+                          direction : Direction String (see src.env_objects.enum.Directions) (ex : 'N' for North)
+        askNeighboor() : Get copy of the neighboor tiles and put them is self.neighboor list
+        extinguish(directionString) : Extinguish the fire in a given direction
+                                      directionString : Direction String (see src.env_objects.enum.Directions)
+                                                        (ex : 'N' for North)
+"""
+
+
 from src.env_objects.enum import TileType, Directions
 from src.envi import Environment
 from src.env_objects import EnvObject
@@ -41,7 +62,7 @@ class Robot(EnvObject.EnvObject):
                     moved = True
             if moved:
                 self.env.robotMove(self)
-                print("Robot moved to " + move.value)
+                #  print("Robot moved to " + move.value)
             if self.listpos[len(self.listpos)-1] != self.oldPos:
                 self.listpos.append(self.oldPos)
             self.askNeighboor()
