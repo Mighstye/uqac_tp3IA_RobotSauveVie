@@ -7,7 +7,7 @@ constructor :
 
     l : the list used by the methods (The list will mostly contain String Value of Element of a Neighbor)
 """
-
+from src.env_objects.enum.TileType import TileType
 
 class Rules:
 
@@ -15,11 +15,11 @@ class Rules:
 
     def __init__(self):
         self.allRules = []
-        self.allRules.append((self.Fire, 'F'))
-        self.allRules.append((self.Dust, 'D'))
-        self.allRules.append((self.Human, 'H'))
-        self.allRules.append((self.Ruins, 'R'))
-        self.allRules.append((self.Warm, 'W'))
+        self.allRules.append((self.Fire, TileType.FIRE.value))
+        self.allRules.append((self.Dust, TileType.DUST.value))
+        self.allRules.append((self.Human, TileType.HUMAN.value))
+        self.allRules.append((self.Ruins, TileType.RUINS.value))
+        self.allRules.append((self.Warm, TileType.WARM.value))
         self.l = []
 
     def assignList(self, li):
@@ -27,30 +27,30 @@ class Rules:
 
     def Fire(self):  # Check if the list contains a Fire, return 50 points if so
         for elem in self.l:
-            if 'F' == elem:
+            if TileType.FIRE.value == elem:
                 return 50
         return 0
 
     def Dust(self):  # Check if the list contains a Dust, return 0 point if so (Still there for fine-tunning purpose)
         for elem in self.l:
-            if 'D' == elem:
+            if TileType.DUST.value == elem:
                 return 0
         return 0
 
     def Human(self):  # Check if the list contains a Human, return 60 points if so
         for elem in self.l:
-            if 'H' == elem:
+            if TileType.HUMAN.value == elem:
                 return 60
         return 0
 
     def Ruins(self):  # Check if the list contains a Ruin, return -1000 points if so
         for elem in self.l:
-            if 'R' == elem:
+            if TileType.RUINS.value == elem:
                 return -1000
         return 0
 
     def Warm(self):  # Check if the list contains a Warm, return 40 points if so
         for elem in self.l:
-            if 'W' == elem:
+            if TileType.WARM.value == elem:
                 return 40
         return 0

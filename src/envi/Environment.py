@@ -185,10 +185,6 @@ class Environment(Borg.Borg):
         except ValueError:
             pass
         self.grid[0][0].append(self.robot)
-        try:
-            self.grid[len(self.grid) - 1][len(self.grid) - 1].remove(self.envObjRef)
-        except ValueError:
-            pass
         humanNeedPlacement = True
         while humanNeedPlacement:
             pos = self.__randomPosInGrid()
